@@ -29,14 +29,17 @@ contract TokenizedBallot {
             }
             tokenContract = ITokenizedVotes(_TokenContract);
             referenceBlock = _referenceBlock;
+        }
             
-            function vote(uint256 proposal, uint256 amount) public {
-                proposals[proposal].voteCount += amount;
-            }
+        function vote(uint256 proposal, uint256 amount) public {
+            uint256 votePower = votePower(msg.sender);
+            require(votePower >= amount);
+            proposals[proposal].voteCount += amount;
+        }
 
-            function votePower(address account) public view returns (uint256 votePower_) {
-                votePower_ = tokenContract.getPastVotes(account, referenceBlock);
-            } 
+        function votePower(address account) public view returns (uint256 votePower_) {
+            votePower_ = tokenContract.getPastVotes(account, referenceBlock);
+        } 
 
         function winningProposal() public view returns (uint256 winningProposal_) {
             uint256 winningVoteCount = 0;
